@@ -1,14 +1,13 @@
 from collections import OrderedDict
-import pickle
-from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
 
 import numpy as np
 import spacy.en
-from spacy.parts_of_speech import ADJ, ADV, NOUN, VERB
+from spacy.parts_of_speech import ADJ, NOUN, VERB
 from gensim import corpora, models, similarities
 
-from run import app, db, Review, Course, Professor
+from schema import Review, Course, Professor
+from run import app
 
 nlp = spacy.en.English()
 pool = ThreadPool(3)
@@ -16,7 +15,7 @@ pool = ThreadPool(3)
 common = {"he", "him", "his", "her", "she", "i", "you", "", "is", "were",
           "was", "'s", "are", "had", "have", "do", "be", "will", "they", 
           "my", "can", "would", "could", "does", "your", "we", "it", "us",
-          "did"}
+          "did", "'ll", "go", "its"}
 
 def tokenize(s):
     return [token.string.strip()
@@ -37,15 +36,20 @@ def reviews():
 
     corpus = corpora.MmCorpus("gensim/reviews.mm")
 
+    tfidf = models.TfidfModel(corpus)
+    tfidf.save("gensim/reviews.tfidf")
+    corpus = tfidf[corpus]
+
     model = models.LsiModel(corpus, id2word=d, num_topics=256)
     model.save("gensim/reviews.lsi")
     sims = similarities.MatrixSimilarity(model[corpus])
 
     sims.save("gensim/reviews.sim")
 
-# reviews()
+#reviews()
 # --------------------- Prep work done  -------------------------------
 d = corpora.Dictionary.load("gensim/reviews.dict")
+tfidf = models.TfidfModel.load("gensim/reviews.tfidf")
 model = models.LsiModel.load("gensim/reviews.lsi")
 #model = models.LdaMulticore.load("gensim/reviews.lda")
 
@@ -74,17 +78,17 @@ def review_recommend(cids, pids, num=5):
     if not reviews:
         return []
 
-    vectors = model[[d.doc2bow(tokenize(review)) for review in reviews]]
+    vectors = model[tfidf[[d.doc2bow(tokenize(review)) for review in reviews]]]
     ss = sum(sims[vectors]) / len(vectors)
 
     s = {}
     for key in courses:
-        s[key] = sum(ss[courses[key]]) / len(courses[key])
+        s[key] = sum(ss[courses[key]]) / (1.5 + len(courses[key]))
 
     cids = sorted(s.keys(), key=lambda k: s[k], reverse=True)[:num]
 
     with app.app_context():
         return OrderedDict((Course.query.filter(Course.id == cid).first(),
                             s[cid]) for cid in cids)
-
-#print "\n\n".join(review_recommend([], [6375]))
+if __name__ == "__main__":
+    print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])

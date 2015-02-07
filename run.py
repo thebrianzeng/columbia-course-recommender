@@ -1,13 +1,13 @@
-from collections import OrderedDict
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, jsonify
 import flask.ext.whooshalchemy as whooshalchemy
 from schema import Professor, Course, Review, db
-import compare
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///culpa.db"
 app.config["WHOOSH_BASE"] = "whoosh/"
 db.init_app(app)
+
+import compare
 
 whooshalchemy.whoosh_index(app, Course)
 whooshalchemy.whoosh_index(app, Professor)
