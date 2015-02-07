@@ -1,0 +1,46 @@
+html, body  {
+    /*background-color: #CFF6FF;*/
+    /*background-color: rgb(236, 236, 236);*/
+    background-color: rgb(249, 249, 249);
+    font-family: 'Open Sans';
+}
+
+.main-body {
+    width: 790px;
+    min-height: 730px;
+}
+
+h1 {
+    font-family: "Cinzel";
+    color: #001AA3;
+}
+
+.white-bg {
+    background-color: white;
+}
+
+.selected-classes-box {
+	padding: 5px 20px 5px 20px;
+	min-height: 140px;	
+}
+
+h4 {
+	color: #001AA3;
+}
+
+.intro-desc h4 {
+	color: black;
+}
+
+.list-group-item {
+    background-color: rgb(249, 249, 249);
+    border-color: #EEE;
+}
+
+.search_results {
+	margin-top: 15px;
+}
+
+.search_results .list-group-item {
+	background-color: white;
+}
