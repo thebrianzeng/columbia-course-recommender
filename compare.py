@@ -3,11 +3,13 @@ from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
 
 import numpy as np
+from scipy import stats
 import spacy.en
 from spacy.parts_of_speech import ADJ, ADV, NOUN, VERB
 from gensim import corpora, models, similarities
 
-from run import app, db, Review, Course, Professor
+from schema import db, Review, Course, Professor
+from run import app
 
 nlp = spacy.en.English()
 pool = ThreadPool(3)
@@ -78,12 +80,13 @@ def review_recommend(cids, pids, num=5):
 
     s = {}
     for key in courses:
-        s[key] = sum(ss[courses[key]]) / len(courses[key])
+        s[key] = sum(ss[courses[key]]) / (1 + len(courses[key]))
 
     cids = sorted(s.keys(), key=lambda k: s[k], reverse=True)[:num]
 
     with app.app_context():
-        return [Course.query.filter(Course.id == cid).first().name
-                for cid in cids]
+        return {Course.query.filter(Course.id == cid).first(): s[cid]
+                for cid in cids}
 
-print "\n\n".join(review_recommend([], [6375]))
+if __name__ == "__main__":
+    print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])

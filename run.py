@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify
 import flask.ext.whooshalchemy as whooshalchemy
 from schema import Professor, Course, Review, db
 
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///culpa.db"
 app.config["WHOOSH_BASE"] = "whoosh/"
