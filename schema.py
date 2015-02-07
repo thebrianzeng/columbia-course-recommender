@@ -1,4 +1,5 @@
 from flask.ext.sqlalchemy import SQLAlchemy
+import flask.ext.whooshalchemy
 
 db = SQLAlchemy()
 
@@ -8,6 +9,7 @@ association_table = db.Table("association",
 
 class Course(db.Model):
     __tablename__ = "course"
+    __searchable__ = ["name", "number"]
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -16,6 +18,7 @@ class Course(db.Model):
 
 class Professor(db.Model):
     __tablename__ = "professor"
+    __searchable__ = ["first_name", "last_name", "middle_name"]
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String)
@@ -29,13 +32,13 @@ class Professor(db.Model):
 
 class Review(db.Model):
     __tablename__ = "review"
+    __searchable__ = ["review", "workload"]
 
     id = db.Column(db.Integer, primary_key=True)
     review = db.Column(db.String)
     workload = db.Column(db.String)
 
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"))
-
 
 if __name__ == "__main__":
     db.create_all()
