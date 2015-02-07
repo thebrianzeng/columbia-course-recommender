@@ -1,6 +1,8 @@
+from collections import OrderedDict
 from flask import Flask, render_template, request, redirect, jsonify
 import flask.ext.whooshalchemy as whooshalchemy
 from schema import Professor, Course, Review, db
+import compare
 
 
 app = Flask(__name__)
@@ -14,7 +16,6 @@ whooshalchemy.whoosh_index(app, Review)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    cls = request.form.keys()
     return render_template("index.html")
 
 @app.route("/class_search/", methods=["POST"])
@@ -33,8 +34,14 @@ def prof_search():
 
 @app.route("/class_process/", methods=["POST"])
 def class_process():
-    print request.form
-    courses = []
+    cids, pids = [], []
+    for key, value in request.form.iteritems():
+        if key.startswith('course'):
+            cids.append(value)
+        else:
+            pids.append(value)
+
+    courses = compare.review_recommend(cids, pids)
     return render_template("class_results.html", courses=courses)
 
 if __name__ == "__main__":

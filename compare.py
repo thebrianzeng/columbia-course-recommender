@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import pickle
 from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
@@ -85,8 +86,7 @@ def review_recommend(cids, pids, num=5):
     cids = sorted(s.keys(), key=lambda k: s[k], reverse=True)[:num]
 
     with app.app_context():
-        return {Course.query.filter(Course.id == cid).first(): s[cid]
-                for cid in cids}
-
+        return OrderedDict((Course.query.filter(Course.id == cid).first(),
+                            s[cid]) for cid in cids)
 if __name__ == "__main__":
     print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])
