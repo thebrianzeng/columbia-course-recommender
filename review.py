@@ -76,7 +76,7 @@ def review_recommend(cids, pids, num=5):
 
     reviews = {r.review for r in r1} | {r.review for r in r2}
     if not reviews:
-        return []
+        raise Exception("No reviews found")
 
     vectors = model[tfidf[[d.doc2bow(tokenize(review)) for review in reviews]]]
     ss = sum(sims[vectors]) / len(vectors)

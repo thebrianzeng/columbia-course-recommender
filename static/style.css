@@ -44,3 +44,7 @@ h4 {
 .search_results .list-group-item {
 	background-color: white;
 }
+
+.error {
+    color: red;
+}
