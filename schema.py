@@ -7,6 +7,7 @@ association_table = db.Table("association",
         db.Column("professor_id", db.Integer, db.ForeignKey("professor.id")),
         db.Column("review_id", db.Integer, db.ForeignKey("review.id")))
 
+
 class Course(db.Model):
     __tablename__ = "course"
     __searchable__ = ["name", "number"]
@@ -15,6 +16,16 @@ class Course(db.Model):
     name = db.Column(db.String)
     number = db.Column(db.String)
     reviews = db.relationship("Review", backref="course")
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializeable format"""
+       return {
+           'id'         : self.id,
+           'name': self.name,
+           'number': self.number,
+       }
+
 
 class Professor(db.Model):
     __tablename__ = "professor"
@@ -26,9 +37,22 @@ class Professor(db.Model):
     middle_name = db.Column(db.String)
     nugget = db.Column(db.Integer)
 
+    @property
+    def serialize(self):
+       """Return object data in easily serializeable format"""
+       return {
+           'id'         : self.id,
+           'first_name': self.first_name,
+           'last_name': self.last_name,
+           'middle_name': self.middle_name,
+           'nugget': self.nugget,
+       }
+
+
     reviews = db.relationship("Review",
                            secondary=association_table,
                            backref="professors")
+
 
 class Review(db.Model):
     __tablename__ = "review"

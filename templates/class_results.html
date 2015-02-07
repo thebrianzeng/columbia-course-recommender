@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="POST" action="/">
+    <div class="container main-body">
+        <h1 class="text-center">Results</h1>
+        <ul class="list-group">
         {% for course in courses %}
-            <input type="submit" name="{{ course.id }}" value="{{ course.name }} ({{ course.number }})">
-            <br/>
+        	<li class="list-group-item">{{ course.name }} ({{ course.number }})</li>
         {% endfor %}
-    </form>
+        </ul>
+    </div>
 {% endblock %}

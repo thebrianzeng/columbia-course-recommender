@@ -3,16 +3,28 @@
     <head>
         <meta charset="UTF-8">
         <title> Course Recommendations </title>
+        <link rel="stylesheet"
+               href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+        <link href='http://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     </head>
 
     <body>
         {% block content %}
-            <form method="POST" action="/search/">
+            <form method="POST" action="/class_search/">
                 <input type="text" name="search">
                 <input type="submit">
             </form>
         {% endblock %}
 
+        {% block footer %}
+        <footer>
+            <h4 class="text-center">Built at DevFest 2015 by Alan Du and Brian Zeng</h4>
+        </footer>
+        {% endblock %}
         {% block scripts %}
         {% endblock %}
     </body>
