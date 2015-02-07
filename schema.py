@@ -41,5 +41,12 @@ class Review(Base):
     course_id = Column(Integer, ForeignKey("course.id"))
 
 
+class ShortenedCourseReview(Base):
+    __tablename__ = "course_reviews"
+
+    id = Column(Integer, primary_key=True)
+    review = Column(String)
+
+
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
