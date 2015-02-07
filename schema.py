@@ -1,45 +1,44 @@
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.ext.declarative import declarative_base
+from flask.ext.sqlalchemy import SQLAlchemy
+import flask.ext.whooshalchemy
 
-engine = create_engine("sqlite:///culpa.db")
-Base = declarative_base()
+db = SQLAlchemy()
 
-association_table = Table("association", Base.metadata,
-        Column("professor_id", Integer, ForeignKey("professor.id")),
-        Column("review_id", Integer, ForeignKey("review.id")))
+association_table = db.Table("association",
+        db.Column("professor_id", db.Integer, db.ForeignKey("professor.id")),
+        db.Column("review_id", db.Integer, db.ForeignKey("review.id")))
 
-class Course(Base):
+class Course(db.Model):
     __tablename__ = "course"
+    __searchable__ = ["name", "number"]
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    number = Column(String)
-    reviews = relationship("Review", backref="course")
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    number = db.Column(db.String)
+    reviews = db.relationship("Review", backref="course")
 
-class Professor(Base):
+class Professor(db.Model):
     __tablename__ = "professor"
+    __searchable__ = ["first_name", "last_name", "middle_name"]
 
-    id = Column(Integer, primary_key=True)
-    first_name = Column(String)
-    last_name = Column(String)
-    middle_name = Column(String)
-    nugget = Column(Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
+    middle_name = db.Column(db.String)
+    nugget = db.Column(db.Integer)
 
-    reviews = relationship("Review",
+    reviews = db.relationship("Review",
                            secondary=association_table,
                            backref="professors")
 
-class Review(Base):
+class Review(db.Model):
     __tablename__ = "review"
+    __searchable__ = ["review", "workload"]
 
-    id = Column(Integer, primary_key=True)
-    review = Column(String)
-    workload = Column(String)
+    id = db.Column(db.Integer, primary_key=True)
+    review = db.Column(db.String)
+    workload = db.Column(db.String)
 
-    course_id = Column(Integer, ForeignKey("course.id"))
-
+    course_id = db.Column(db.Integer, db.ForeignKey("course.id"))
 
 class ShortenedCourseReview(Base):
     __tablename__ = "course_reviews"
@@ -49,4 +48,4 @@ class ShortenedCourseReview(Base):
 
 
 if __name__ == "__main__":
-    Base.metadata.create_all(engine)
+    db.create_all()

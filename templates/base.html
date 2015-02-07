@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> Course Recommendations </title>
+    </head>
+
+    <body>
+        {% block content %}
+            <form method="POST" action="/search/">
+                <input type="text" name="search">
+                <input type="submit">
+            </form>
+        {% endblock %}
+
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

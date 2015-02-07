@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="POST" action="/">
+        {% for course in courses %}
+            <input type="submit" name="{{ course.id }}" value="{{ course.name }} ({{ course.number }})">
+            <br/>
+        {% endfor %}
+    </form>
+{% endblock %}
