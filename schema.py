@@ -7,14 +7,14 @@ association_table = db.Table("association",
         db.Column("professor_id", db.Integer, db.ForeignKey("professor.id")),
         db.Column("review_id", db.Integer, db.ForeignKey("review.id")))
 
-
 class Course(db.Model):
     __tablename__ = "course"
-    __searchable__ = ["name", "number"]
+    __searchable__ = ["name", "number", "description"]
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     number = db.Column(db.String)
+    description = db.Column(db.String)
     reviews = db.relationship("Review", backref="course")
 
     @property
@@ -45,8 +45,6 @@ class Professor(db.Model):
                 'middle_name': self.middle_name,
                 'nugget': self.nugget, }
 
-
-
 class Review(db.Model):
     __tablename__ = "review"
     __searchable__ = ["review", "workload"]
@@ -56,6 +54,3 @@ class Review(db.Model):
     workload = db.Column(db.String)
 
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"))
-
-if __name__ == "__main__":
-    db.create_all()
