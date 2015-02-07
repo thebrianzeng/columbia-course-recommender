@@ -3,9 +3,15 @@
 {% block content %}
     <div class="container main-body">
         <h1 class="text-center">Results</h1>
+        <div class="intro-desc">
+            <h4>Here are your recommendations! Click on a course to get to the
+                CULPA reviews for that course.</h4>
+        </div>
         <ul class="list-group">
-        {% for course in courses %}
-        	<li class="list-group-item">{{ course.name }} ({{ course.number }})</li>
+        {% for course, score in courses.iteritems() %}
+        	 <a href="http://culpa.info/courses/{{ course.id }}"
+                class="list-group-item">{{ course.name }} ({{ course.number
+                 }}) Similarity Score: {{ score }}</a>
         {% endfor %}
         </ul>
     </div>
