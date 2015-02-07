@@ -1,15 +1,12 @@
 from collections import OrderedDict
-import pickle
-from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
 
 import numpy as np
-from scipy import stats
 import spacy.en
-from spacy.parts_of_speech import ADJ, ADV, NOUN, VERB
+from spacy.parts_of_speech import ADJ, NOUN, VERB
 from gensim import corpora, models, similarities
 
-from schema import db, Review, Course, Professor
+from schema import Review, Course, Professor
 from run import app
 
 nlp = spacy.en.English()

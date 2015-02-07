@@ -1,9 +1,6 @@
-from collections import OrderedDict
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, jsonify
 import flask.ext.whooshalchemy as whooshalchemy
 from schema import Professor, Course, Review, db
-
-
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///culpa.db"
