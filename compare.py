@@ -17,7 +17,6 @@ def recommend(cids, pids, num=5):
             scores[key] = (rweight * rev_scores[key] + dweight * des_scores[key]) / (dweight + rweight)
         else:
             scores[key] = rev_scores[key]
-
     
     assert bool(scores)
     cids = sorted(scores.keys(), key=lambda k: scores[k], reverse=True)[:num]

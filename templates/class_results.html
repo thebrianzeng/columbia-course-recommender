@@ -10,8 +10,8 @@
         <ul class="list-group">
         {% for course, score in courses.iteritems() %}
         	 <a href="http://culpa.info/courses/{{ course.id }}"
-                class="list-group-item">{{ course.name }} ({{ course.number
-                 }}) Similarity Score: {{ score }}</a>
+                     class="list-group-item"><strong>{{ course.name }}</strong> ({{ course.number }})
+                     <span style="float: right"> Similarity Score: <strong> {{ 100 * score | round(3) }} </strong></span></a>
         {% endfor %}
         </ul>
     </div>
