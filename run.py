@@ -9,6 +9,7 @@ db.init_app(app)
 
 import compare
 
+
 whooshalchemy.whoosh_index(app, Course)
 whooshalchemy.whoosh_index(app, Professor)
 whooshalchemy.whoosh_index(app, Review)
@@ -41,7 +42,7 @@ def class_process():
             pids.append(value)
 
     try:
-        courses = compare.review_recommend(cids, pids)
+        courses = compare.recommend(cids, pids)
     except Exception as e:
         print e.message
         return render_template("index.html", error=True)

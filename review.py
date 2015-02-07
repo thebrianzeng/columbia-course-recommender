@@ -76,7 +76,7 @@ def review_recommend(cids, pids, num=5):
 
     reviews = {r.review for r in r1} | {r.review for r in r2}
     if not reviews:
-        raise Exception("No reviews found")
+        return {}
 
     vectors = model[tfidf[[d.doc2bow(tokenize(review)) for review in reviews]]]
     ss = sum(sims[vectors]) / len(vectors)
@@ -85,10 +85,7 @@ def review_recommend(cids, pids, num=5):
     for key in courses:
         s[key] = sum(ss[courses[key]]) / (1.5 + len(courses[key]))
 
-    cids = sorted(s.keys(), key=lambda k: s[k], reverse=True)[:num]
+    return s
 
-    with app.app_context():
-        return OrderedDict((Course.query.filter(Course.id == cid).first(),
-                            s[cid]) for cid in cids)
 if __name__ == "__main__":
     print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])

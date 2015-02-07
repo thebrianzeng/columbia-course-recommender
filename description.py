@@ -18,18 +18,21 @@ common = {"he", "him", "his", "her", "she", "i", "you", "", "is", "were",
           "did", "'ll", "go", "its"}
 
 def tokenize(s):
-    return [token.string.strip()
-            for token in nlp(s.lower(), parse=False, tag=True)
-            if token.pos in {ADJ, NOUN, VERB} and token.string.strip() not in common]
+    if s:
+        return [token.string.strip()
+                for token in nlp(s.lower(), parse=False, tag=True)
+                if token.pos in {ADJ, NOUN, VERB} and token.string.strip() not in common]
+    else:
+        return []
 
-def reviews():
+def courses():
     with app.app_context():
         data = [course.description for course in Course.query.order_by(Course.id).all()]
 
     courses = pool.map(tokenize, data)
 
     d = corpora.Dictionary(courses)
-    d.save("gensim/course.dict")
+    d.save("gensim/courses.dict")
 
     corpus = pool.map(d.doc2bow, courses)
     corpora.MmCorpus.serialize("gensim/courses.mm", corpus)
@@ -40,13 +43,13 @@ def reviews():
     tfidf.save("gensim/courses.tfidf")
     corpus = tfidf[corpus]
 
-    model = models.LsiModel(corpus, id2word=d, num_topics=256)
+    model = models.LsiModel(corpus, id2word=d, num_topics=64)
     model.save("gensim/courses.lsi")
     sims = similarities.MatrixSimilarity(model[corpus])
 
     sims.save("gensim/courses.sim")
 
-#reviews()
+# courses()
 # --------------------- Prep work done  -------------------------------
 d = corpora.Dictionary.load("gensim/courses.dict")
 tfidf = models.TfidfModel.load("gensim/courses.tfidf")
@@ -56,28 +59,29 @@ model = models.LsiModel.load("gensim/courses.lsi")
 sims = similarities.MatrixSimilarity.load("gensim/courses.sim")
 
 with app.app_context():
-    cids = [c.id for c in Course.query.order_by(Course.id).all()]
-    cids = np.array(cids)
+    course_ids = [c.id for c in Course.query.order_by(Course.id).all()]
+    course_ids = np.array(course_ids)
 
-def review_recommend(cids, pids, num=5):
+def course_recommend(cids, pids, num=5):
     c1, c2 = [], []
     with app.app_context():
         if cids:
-            c1 = Course.query.filter((Course.id.in_(cids)).all()
+            c1 = Course.query.filter(Course.id.in_(cids)).all()
         if pids:
             c2 = Course.query.join(Course.reviews).join(Review.professors).filter(Professor.id.in_(pids)).all()
 
-    courses = {c.course for c in c1} | {c.course for c in c2}
+    courses = {c.description for c in c1 if c.description} | {c.description for c in c2 if c.description}
     if not courses:
-        return []
+        return {}
 
-    vectors = model[tfidf[[d.doc2bow(tokenize(review)) for course in courses]]]
+    vectors = model[tfidf[[d.doc2bow(tokenize(course)) for course in courses]]]
     ss = sum(sims[vectors]) / len(vectors)
 
-    cids = sorted(s.keys(), key=lambda k: s[k], reverse=True)[:num]
+    scores = {}
+    for i, cid in enumerate(ss):
+        scores[course_ids[i]] = cid
 
-    with app.app_context():
-        return OrderedDict((Course.query.filter(Course.id == cid).first(),
-                            s[cid]) for cid in cids)
+    return scores 
+
 if __name__ == "__main__":
-    print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])
+    print "\n\n".join([r.name for r in course_recommend([1908], [1891, 119])])

@@ -1,6 +1,5 @@
 from flask.ext.sqlalchemy import SQLAlchemy
 import flask.ext.whooshalchemy
-import run
 
 db = SQLAlchemy()
 
@@ -55,7 +54,3 @@ class Review(db.Model):
     workload = db.Column(db.String)
 
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"))
-
-if __name__ == "__main__":
-    with run.app.app_context():
-        db.create_all()
