@@ -43,7 +43,7 @@ def class_process():
 
     try:
         courses = compare.recommend(cids, pids)
-    except Exception as e:
+    except AssertionError as e:
         print e.message
         return render_template("index.html", error=True)
     return render_template("class_results.html", courses=courses)

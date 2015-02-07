@@ -88,4 +88,5 @@ def review_recommend(cids, pids, num=5):
     return s
 
 if __name__ == "__main__":
-    print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])
+    reviews()
+    #print "\n\n".join([r.name for r in review_recommend([1908], [1891, 119])])

@@ -84,4 +84,5 @@ def course_recommend(cids, pids, num=5):
     return scores 
 
 if __name__ == "__main__":
-    print "\n\n".join([r.name for r in course_recommend([1908], [1891, 119])])
+    courses()
+    #print "\n\n".join([r.name for r in course_recommend([1908], [1891, 119])])
