@@ -8,11 +8,10 @@ import frequests
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import sessionmaker, load_only
 
-from schema import engine, Professor, Review, Course
+from run import app, db, Professor, Review, Course
 
 Session = sessionmaker(bind=engine)
 session = Session()
-
 
 r = requests.get("http://culpa.info/")
 soup = BeautifulSoup(r.text)
